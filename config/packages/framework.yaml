@@ -1,12 +1,33 @@
-# see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
-
-    # Note that the session will be started ONLY if you read or write from it.
     session: true
+    validation: { enabled: true, enable_attributes: true }
 
-    #esi: true
-    #fragments: true
+    error_controller: App\Controller\ErrorController
+
+    # Habilita la caché de rutas y anotaciones
+    router:
+        strict_requirements: null
+        utf8: true
+
+    # Configura el manejo de excepciones
+    exceptions:
+        html: true
+        json: true
+    http_method_override: true
+
+    esi: true
+
+    # Usa el handler de caché de Symfony
+    cache:
+        app: cache.adapter.filesystem
+        system: cache.adapter.system
+
+
+    http_cache:
+         enabled: true
+
+
 
 when@test:
     framework:
