@@ -47,6 +47,7 @@ final class ProductosController extends AbstractController
         ),
         description: 'Lista de mis productos.'
     )]
+    #[Security(name: 'Bearer')]
     public function list(ProductosRepository $productosRepository): Response
     {
         $user= $this->getUser();
@@ -61,6 +62,7 @@ final class ProductosController extends AbstractController
         description: 'Mostrar un producto',
         content: new Model(type: Productos::class)
     )]
+    #[Security(name: 'Bearer')]
     public function private_show(?Productos $producto): Response
     {
         $user = $this->getUser();
@@ -83,16 +85,16 @@ final class ProductosController extends AbstractController
         description: 'Añadir nuevo post',
         content: new Model(type: ProductosForm::class)
     )]
+    #[Security(name: 'Bearer')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-       
-      
+        $user = $this->getUser();
         $producto = new Productos();
         $form = $this->createForm(ProductosForm::class, $producto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $producto->setUser($this->getUser());
+            $producto->setUser($user);
             $entityManager->persist($producto);
             $entityManager->flush();
 
@@ -135,6 +137,7 @@ final class ProductosController extends AbstractController
         description: 'Añadir nuevo post',
         content: new Model(type: ProductosForm::class)
     )]
+    #[Security(name: 'Bearer')]
     public function edit(Request $request, ?Productos $producto, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
@@ -179,6 +182,7 @@ final class ProductosController extends AbstractController
         description: 'Eliminar un producto',
         content: new Model(type: Productos::class)
     )]
+    #[Security(name: 'Bearer')]
     public function delete(?Productos $producto, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();

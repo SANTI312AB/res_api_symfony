@@ -28,6 +28,8 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            logout:
+                path: app_logout
 
     access_control:
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

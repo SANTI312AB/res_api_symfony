@@ -14,5 +14,15 @@ nelmio_api_doc:
             - Bearer: []
     
     areas:
-        path_patterns:
-            - '^/((?!(?:_error|_wdt|_profiler)).)*$'
+        # Área para las rutas de la API que SÍ requieren autenticación
+        api:
+            path_patterns:
+                - '^/api'
+            documentation:
+                security:
+                    - Bearer: []
+
+        # Área para el resto de rutas que NO requieren autenticación
+        default:
+            path_patterns:
+                - '^/((?!(?:_error|_wdt|_profiler|doc)).)*$'

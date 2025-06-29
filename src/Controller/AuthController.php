@@ -14,6 +14,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use Nelmio\ApiDocBundle\Attributes\Security;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Http\Event\LogoutEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class AuthController extends AbstractController
 {
@@ -94,6 +97,7 @@ final class AuthController extends AbstractController
         description: 'Editar usuario',
         content: new Model(type: AuthForm::class)
     )]
+    #[Security(name: 'Bearer')]
     public function editUser(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
@@ -155,13 +159,17 @@ final class AuthController extends AbstractController
     #[Route('/api/logout', name: 'app_logout', methods: ['POST'])]
     #[OA\Tag(name: 'Auth')]
     #[Security(name: 'Bearer')]
-    public function logout(): Response
-    {
-        // Symfony maneja el logout automáticamente, no es necesario implementar lógica aquí.
+    public function logout(
+        Request $request,
+        EventDispatcherInterface $eventDispatcher,
+        TokenStorageInterface $tokenStorage
+    ): Response {
+        // Se dispara el evento que LexikJWTAuthenticationBundle escucha
+        $eventDispatcher->dispatch(new LogoutEvent($request, $tokenStorage->getToken()));
+
         return $this->json([
-            'message' => 'Logout successful'
-        ]);
+            'message' => 'Logout exitoso'
+        ])->setStatusCode(Response::HTTP_OK);
     }
-    
 }
 
